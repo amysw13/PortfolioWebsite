@@ -1,0 +1,415 @@
+<!DOCTYPE HTML>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+
+<head>
+	<title>Database Modelling - Amy Sing Wong</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<link rel="stylesheet" href="assets/css/prism.css" />
+	<noscript>
+		<link rel="stylesheet" href="assets/css/noscript.css" />
+	</noscript>
+</head>
+
+<body class="is-preload">
+	<!-- Wrapper -->
+	<div id="wrapper">
+
+		<!-- Header -->
+		<header id="header">
+			<div class="inner">
+
+				<!-- Logo -->
+				<a href="index.html" class="logo">
+					<span class="symbol"><img src="images/logo.svg" alt="" /></span><span class="title">Home</span>
+				</a>
+
+				<!-- Nav -->
+				<nav>
+					<ul>
+						<li><a href="#menu">Menu</a></li>
+					</ul>
+				</nav>
+
+			</div>
+		</header>
+
+		<!-- Menu -->
+		<nav id="menu">
+			<h2>Menu</h2>
+			<ul>
+				<li><a href="index.html">Home</a></li>
+				<li><a href="DatabaseModelling.html">Database Modelling </a></li>
+				<li><a href="ESEA_data_project.html">The FOI Data Project</a></li>
+				<li><a href="https://github.com/amysw13/multinational-retail-data-centralisation" target="_blank"><i class="fab fa-github"></i> Data Centralisation</a></li>
+				<li><a href="https://github.com/amysw13/pinterest-data-pipeline819" target="_blank"><i class="fab fa-github"></i> End-to-end data pipeline</a></li>
+				<li><a href = "publications.html">Academic Work</a></li>
+
+			</ul>
+		</nav>
+
+		<!-- Main -->
+		<div id="main">
+			<div class="inner">
+				<h1>Database Modelling</h1>
+				<h3>Project created for completion of Data & SQL Coding Kickstarter with <a href="https://codefirstgirls.com" target="_blank">Code First Girls</a></span></h3>
+
+				<p>Utilising <b>MySQL</b> to create a database for a leisure centre, using dummy data created with the
+					help of <b>ChatGPT</b>.</p>
+				<p>Database and tables creation and manual insert of data across 4 dimension tables and 1 fact table.
+					Declaring Primary and Foreign Keys to form a star-based schema database. </p>
+				<div class="box alt" style="height: 500px; width: 80%; overflow: auto; margin-left: auto; margin-right: auto">
+					<pre><code class="language-sql">-- All data in database is dummy/toy data and not based on true people or events
+CREATE DATABASE leisure_centre;
+
+USE leisure_centre;
+
+/* Creating the visitation fact table for visit to leisure centre 
+where customers took up an activity */
+CREATE TABLE visit_fact
+(visit_date DATE NOT NULL,
+visit_time_in TIME NOT NULL,
+visit_time_out TIME NOT NULL,
+customer_ID INT NULL, 
+membership_ID INT NULL DEFAULT 0000,
+activity_ID INT NULL ,
+instructor_ID INT NULL,
+visit_cost DECIMAL(5,2) DEFAULT 0.00,
+peak_hours VARCHAR(30));
+
+-- Fact table values 
+INSERT INTO visit_fact VALUES
+('2024-03-01', '09:00:00', '10:30:00', 1001, 2001, 3001, 4001, 5.00, 'Off Peak'),
+('2024-03-01', '10:30:00', '12:00:00', 1002, 2002, 3002, 4002, 0.00, 'Off Peak'),
+('2024-03-01', '11:30:00', '13:00:00', 1003, 2003, 3003, 4003, 0.00, 'Off Peak'),
+('2024-03-01', '14:00:00', '16:00:00', 1004, 2001, 3004, 4004, 8.00, 'Off Peak'),
+('2024-03-01', '09:30:00', '11:00:00', 1007, 2001, 3003, 4002, 6.00, 'Off Peak'),
+('2024-03-01', '11:00:00', '12:30:00', 1008, 2002, 3001, 4003, 0.00, 'Off Peak'),
+('2024-03-02', '09:00:00', '10:30:00', 1005, 2002, 3005, 4005, 6.50, 'Peak Hours WE'),
+('2024-03-02', '10:30:00', '12:00:00', 1006, 2003, 3006, 4001, 0.00, 'Peak Hours WE'),
+('2024-03-02', '12:00:00', '14:00:00', 1007, 2001, 3007, 4002, 7.00, 'Peak Hours WE'),
+('2024-03-02', '14:00:00', '15:30:00', 1008, 2002, 3008, 4003, 7.50, 'Peak Hours WE'),
+('2024-03-02', '11:30:00', '13:00:00', 1003, 2003, 3003, 4003, 0.00, 'Peak Hours WE'),
+('2024-03-02', '09:30:00', '11:30:00', 1004, 2001, 3004, 4004, 8.00, 'Peak Hours WE'),
+('2024-03-02', '10:30:00', '12:00:00', 1001, 2001, 3001, 4001, 5.00, 'Peak Hours WE'),
+('2024-03-02', '14:00:00', '16:00:00', 1009, 2003, 3004, 4004, 0.00, 'Peak Hours WE'),
+('2024-03-03', '09:00:00', '10:30:00', 1009, 2003, 3001, 4004, 0.00, 'Peak Hours WE'),
+('2024-03-03', '10:30:00', '12:00:00', 1010, 2001, 3002, 4005, 7.50, 'Peak Hours WE'),
+('2024-03-03', '12:00:00', '13:30:00', 1001, 2001, 3003, 4001, 6.00, 'Peak Hours WE'),
+('2024-03-03', '14:00:00', '16:00:00', 1002, 2002, 3004, 4002, 8.00, 'Peak Hours WE'),
+('2024-03-03', '11:00:00', '12:30:00', 1005, 2002, 3001, 4005, 5.00, 'Peak Hours WE'),
+('2024-03-03', '13:00:00', '14:30:00', 1006, 2003, 3002, 4001, 0.00, 'Peak Hours WE'),
+('2024-03-03', '12:00:00', '13:30:00', 1002, 2002, 3002, 4002, 7.50, 'Peak Hours WE'),
+('2024-03-03', '11:30:00', '13:00:00', 1005, 2002, 3001, 4005, 5.00, 'Peak Hours WE'),
+('2024-03-03', '10:00:00', '11:30:00', 1004, 2001, 3002, 4005, 7.50, 'Peak Hours WE'),
+('2024-03-04', '09:00:00', '10:30:00', 1001, 2001, 3005, 4003, 6.50, 'Off Peak'),
+('2024-03-04', '10:30:00', '12:00:00', 1002, 2002, 3006, 4004, 0.00, 'Off Peak'),
+('2024-03-04', '12:00:00', '14:00:00', 1003, 2003, 3007, 4005, 0.00, 'Off Peak'),
+('2024-03-04', '14:00:00', '15:30:00', 1004, 2001, 3008, 4001, 7.50, 'Off Peak'),
+('2024-03-04', '10:00:00', '11:30:00', 1007, 2001, 3003, 4002, 6.00, 'Off Peak'),
+('2024-03-04', '11:30:00', '13:00:00', 1008, 2002, 3001, 4003, 0.00, 'Off Peak'),
+('2024-03-04', '13:00:00', '14:30:00', 1006, 2003, 3002, 4001, 0.00, 'Off Peak'),
+('2024-03-05', '09:00:00', '10:30:00', 1005, 2002, 3001, 4002, 0.00, 'Off Peak'),
+('2024-03-05', '10:30:00', '12:00:00', 1006, 2003, 3002, 4003, 0.00, 'Off Peak'),
+('2024-03-05', '12:00:00', '13:30:00', 1007, 2001, 3003, 4004, 6.00, 'Off Peak'),
+('2024-03-05', '14:00:00', '16:00:00', 1008, 2002, 3004, 4005, 0.00, 'Off Peak'),
+('2024-03-05', '12:00:00', '14:00:00', 1009, 2003, 3004, 4004, 0.00, 'Off Peak'),
+('2024-03-05', '09:00:00', '10:30:00', 1010, 2001, 3002, 4005, 7.50, 'Off Peak'),
+('2024-03-06', '09:00:00', '10:30:00', 1009, 2003, 3005, 4001, 0.00, 'Off Peak'),
+('2024-03-06', '10:30:00', '12:00:00', 1010, 2001, 3006, 4002, 6.00, 'Off Peak'),
+('2024-03-06', '12:00:00', '14:00:00', 1001, 2001, 3007, 4003, 7.00, 'Off Peak'),
+('2024-03-06', '14:00:00', '15:30:00', 1002, 2002, 3008, 4004, 0.00, 'Off Peak'),
+('2024-03-06', '14:00:00', '15:30:00', 1003, 2003, 3003, 4003, 0.00, 'Off Peak'),
+('2024-03-07', '09:00:00', '10:30:00', 1001, 2001, 3001, 4005, 5.00, 'Off Peak'),
+('2024-03-07', '10:30:00', '12:00:00', 1002, 2002, 3002, 4001, 0.00, 'Off Peak'),
+('2024-03-07', '12:00:00', '13:30:00', 1003, 2003, 3003, 4002, 0.00, 'Off Peak'),
+('2024-03-07', '14:00:00', '16:00:00', 1004, 2001, 3004, 4003, 8.00, 'Off Peak'),
+('2024-03-07', '09:30:00', '11:30:00', 1010, 2001, 3004, 4004, 8.00, 'Off Peak');
+
+-- Check table and values are all how expected 
+SELECT *
+FROM visit_fact;
+
+-- Creating the dimension tables
+
+-- Membership table
+CREATE TABLE membership_dim 
+(membership_ID INT NOT NULL PRIMARY KEY,
+membership_tier VARCHAR(10) NOT NULL DEFAULT "Bronze",
+activity_included VARCHAR(5) NOT NULL DEFAULT "False",
+peak_hours VARCHAR(5) NULL,
+monthly_cost DECIMAL(5,2) DEFAULT 30.00,
+annual_cost DECIMAL(5,2) DEFAULT 300.00
+);
+
+INSERT INTO membership_dim VALUES
+(2001, 'Bronze', 'False', NULL, 30.00, 300.00),
+(2002, 'Silver', 'True', 'False', 50.00, 500.00),
+(2003, 'Gold', 'True', 'True', 80.00, 800.00);
+
+SELECT *
+FROM membership_dim;
+
+CREATE TABLE activity_dim
+(activity_ID INT NOT NULL PRIMARY KEY,
+activity_name VARCHAR(50) NOT NULL,
+activity_level VARCHAR(30),
+activity_cost DECIMAL(5,2) DEFAULT 0.00,
+duration_mins INT NOT NULL DEFAULT 30
+);
+
+INSERT INTO activity_dim VALUES
+(3001, 'Swimming', 'Intermediate', 5.00, 60),
+(3002, 'Yoga', 'Beginner', 7.50, 60),
+(3003, 'Spinning', 'Advanced', 6.00, 60),
+(3004, 'Zumba', 'Intermediate', 8.00, 90),
+(3005, 'Pilates', 'Beginner', 6.50, 60),
+(3006, 'Aerobics', 'Intermediate', 6.00, 60),
+(3007, 'Weight Training', 'Beginner', 7.00, 90),
+(3008, 'Cardio Kickboxing', 'Intermediate', 7.50, 60);
+
+SELECT *
+FROM activity_dim;
+
+CREATE TABLE customer_dim 
+(customer_ID INT NOT NULL PRIMARY KEY,
+first_name VARCHAR(30) NOT NULL DEFAULT "NoFirstName",
+last_name VARCHAR(30) NOT NULL DEFAULT "NoLastName" , 
+join_date DATE NOT NULL, 
+age INT, 
+gender VARCHAR(10), 
+email_address VARCHAR(50) NULL, 
+address VARCHAR(60) NULL);
+
+INSERT INTO customer_dim VALUES 
+(1001, 'John', 'Smith', '2019-05-15', 30, 'Male', 'John_Smith@emaile.com', '15 Oxford Road, Manchester'),
+(1002, 'Emma', 'Johnson', '2020-02-20', 28, 'Female', 'Emma_Johnson@emaile.com', '28 Bridge Street, Salford'),
+(1003, 'Michael', 'Brown', '2018-11-10', 35, 'Male', 'Michael_Brown@emaile.com', '7 Market Street, Oldham'),
+(1004, 'Sarah', 'Lee', '2021-08-05', 25, 'Female', 'Sarah_Lee@emaile.com', '40 High Street, Bolton'),
+(1005, 'David', 'Gooseberry', '2017-04-25', 40, 'Male', 'David_Gooseberry@emaile.com', '12 Corporation Street, Stockport'),
+(1006, 'Emily', 'Taylor', '2016-09-30', 45, 'Female', 'Emily_Taylor@emaile.com', '33 Victoria Street, Rochdale'),
+(1007, 'James', 'Brown', '2022-03-10', 22, 'Male', 'James_Brown@emaile.com', '9 Chapel Street, Ashton-under-Lyne'),
+(1008, 'Olivia', 'Clark', '2015-12-20', 50, 'Female', 'Olivia_Clark@emaile.com', '22 King Street, Bury'),
+(1009, 'Ethan', 'Moore', '2023-01-05', 20, 'Male', 'Ethan_Moore@emaile.com', '14 St. Anns Square, Manchester'),
+(1010, 'Ava', 'Hill', '2014-07-15', 55, 'Female', 'Ava_Hill@emaile.com', '5 Union Street, Altrincham');
+
+SELECT *
+FROM customer_dim;
+
+CREATE TABLE instructor_dim (
+instructor_ID INT NOT NULL PRIMARY KEY, 
+first_name VARCHAR(30) NOT NULL DEFAULT "NoFirstName",
+last_name VARCHAR(30) NOT NULL DEFAULT "NoLastName" , 
+hired_date DATE NOT NULL, 
+age INT, 
+gender VARCHAR(10), 
+email_address VARCHAR(50) NULL, 
+address VARCHAR(60) NULL,
+instructor_speciality VARCHAR(30));
+
+
+INSERT INTO instructor_dim VALUES 
+(4001, 'Derek', 'Kerry', '2018-03-15', 35, 'Male', 'Derek_Kerry@gooddayslc.com', '17 Castle Street, Macclesfield', 'Swimming'),
+(4002, 'Zara', 'Malik', '2019-01-20', 30, 'Female', 'Zara_Malik@gooddayslc.com', '8 Market Place, Hyde', 'Yoga'),
+(4003, 'Darren', 'Brown', '2017-07-10', 40, 'Male', 'Darren_Brown@gooddayslc.com', '11 Wigan Road, Wigan', 'Spinning'),
+(4004, 'Amelia', 'Wilson', '2020-05-05', 28, 'Female', 'Amelia_Wilson@gooddayslc.com', '19 Railway Road, Urmston', 'Zumba'),
+(4005, 'Vernon', 'Tucker', '2016-11-25', 45, 'Male', 'Vernon_Tucker@gooddayslc.com', '2 Cheadle Road, Cheadle', 'Pilates'),
+(4006, 'Candice', 'Clark', '2021-09-30', 25, 'Female', 'Candice_Clark@gooddayslc.com', '25 Wilmslow Road, Wilmslow', 'Aerobics'),
+(4007, 'Harry', 'Cooper', '2015-04-10', 50, 'Male', 'Harry_Cooper@gooddayslc.com', '36 Long Street, Middleton', 'Weight Training'),
+(4008, 'Jessica', 'Garcia', '2022-02-15', 22, 'Female', 'Jessica_Garcia@gooddayslc.com', '4 Church Street, Eccles', 'Cardio Kickboxing');
+
+SELECT *
+FROM instructor_dim;
+
+-- Example for foreign key syntax
+-- look into contrainst again
+ALTER TABLE visit_fact
+ADD CONSTRAINT fk_membership_ID
+FOREIGN KEY (membership_ID)
+REFERENCES membership_dim(membership_ID);
+
+ALTER TABLE visit_fact
+ADD CONSTRAINT fk_activity_ID
+FOREIGN KEY (activity_ID)
+REFERENCES activity_dim(activity_ID);
+
+ALTER TABLE visit_fact
+ADD CONSTRAINT fk_customer_ID
+FOREIGN KEY (customer_ID)
+REFERENCES customer_dim(customer_ID);
+
+ALTER TABLE visit_fact
+ADD CONSTRAINT fk_instructor_ID
+FOREIGN KEY (instructor_ID)
+REFERENCES instructor_dim(instructor_ID);</code></pre>
+				</div>
+				<figure style="display: block; margin-left: auto; margin-right: auto">
+					<img style="display: block; width: 65%; height: 70%; margin-left: auto; margin-right: auto", src="images\leisure_centre_ERD_ASW.png" alt="" />
+					<figcaption><i>Entity Relational Digram: Leisure Centre database, star-schema</i></figcaption>
+				</figure>
+				<p>Created queries and views, alongside stored procedures and functions for repetitive tasks. </p>
+				<div class="box alt" style="height: 400px; width: 80%; overflow: auto; margin-left: auto; margin-right: auto">
+				<pre><code class="language-sql">USE leisure_centre;
+
+-- joining tables
+-- Joining visits and customer dim tables to see which customers are attending which classes and when
+SELECT *
+FROM visit_fact
+INNER JOIN
+customer_dim
+USING (customer_ID);
+
+-- Query with subquery
+-- How many times are customers visiting in during this week
+
+SELECT 
+sub.Customer_full_name,
+COUNT(vis.customer_ID) AS num_visits
+FROM visit_fact vis 
+LEFT JOIN 
+(SELECT customer_ID,
+CONCAT(first_name, ' ', last_name) AS Customer_full_name
+FROM
+customer_dim
+) AS sub
+USING (customer_ID)
+GROUP BY Customer_full_name;
+
+-- Create a stored function
+-- Number of years instructors have been employed
+
+DELIMITER //
+
+CREATE FUNCTION Num_years_employed(date1 date) 
+RETURNS INTEGER 
+DETERMINISTIC
+BEGIN
+	DECLARE date2 DATE;
+	Select current_date()into date2;
+	RETURN year(date2)-year(date1);
+END 
+
+//
+
+DELIMITER ;
+
+SELECT instructor_ID, 
+CONCAT(first_name, ' ', last_name) AS Instructor_full_name,
+Num_years_employed(hired_date) as 'Years_employed'
+FROM instructor_dim
+ORDER BY Years_employed DESC;
+
+-- What classes are instructors leading and how many? 
+-- Are the classes in their speciality? 
+-- Cardio Kickboxing classes do not have a speciality instructor - could be a gap to hire a specialist? 
+CREATE VIEW instructor_and_classes
+AS
+SELECT 
+CONCAT(ins.first_name, " ", ins.last_name) AS Class_instructor,
+sub.activity_name,
+COUNT(sub.activity_name) AS Num_attended,
+ins.instructor_speciality
+FROM 
+	(SELECT *
+FROM visit_fact
+INNER JOIN
+activity_dim
+USING (activity_ID)) AS sub
+INNER JOIN
+instructor_dim ins
+USING (instructor_ID)
+GROUP BY Class_instructor, activity_name, instructor_speciality
+ORDER BY Class_instructor;
+
+-- Show the view 
+SELECT *
+FROM instructor_and_classes;
+
+-- Querying the created view
+SELECT Class_instructor,
+COUNT(activity_name) AS Num_different_classes
+FROM instructor_and_classes
+GROUP BY Class_instructor
+HAVING Num_different_classes > 4
+ORDER BY Num_different_classes DESC;
+
+-- Create a stored procedure
+-- Most popular classes attended 
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `most_popular_classes`()
+BEGIN
+SELECT sub.activity_name,
+COUNT(sub.activity_name) AS Num_attended
+FROM 
+	(SELECT *
+FROM visit_fact
+INNER JOIN
+activity_dim
+USING (activity_ID)) AS sub
+GROUP BY activity_name;
+END$$
+DELIMITER ;
+
+-- Run stored procedure 
+CALL `leisure_centre`.`most_popular_classes`();</code></pre>
+				</div>
+				<div>
+					<p>Basic visualisations created with Power BI from queries</p>
+					<figure style="display: block; margin-left: auto; margin-right: auto">
+						<img style="display: block; width: 80%; height: 80%; margin-left: auto; margin-right: auto", src="images\leisure_centre_dashboard.png" alt="" />
+						<figcaption><i>Basic dashboard created with Power BI</i></figcaption>
+					</figure>
+				</div>
+				<h2>Tools</h2>
+				<div class="row">
+					<div class="col-6 col-12-medium">
+						<ul>
+							<li>MySQL</li>
+							<li>ChatGPT</li>
+							<li>Excel (conditional formatting and VLOOKUP)</li>
+							<li>Power BI</li>
+							<li>Quarto</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Footer -->
+		<footer id="footer">
+			<div class="inner">
+				<section>
+					<h2>Follow</h2>
+					<ul class="icons">
+						<li><a href="https://www.linkedin.com/in/amy-sing-wong/"
+								class="icon brands style2 fa-linkedin"><span class="label">LinkedIn</span></a></li>
+						<li><a href="https://github.com/amysw13" class="icon brands style2 fa-github"><span
+									class="label">GitHub</span></a></li>
+					</ul>
+				</section>
+				<ul class="copyright">
+					<li>&copy; Untitled. All rights reserved</li>
+					<li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+				</ul>
+			</div>
+		</footer>
+
+	</div>
+
+	<!-- Scripts -->
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+	<script src="assets/js/prism.js"></script>
+
+</body>
+
+</html>
